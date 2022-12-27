@@ -5,4 +5,6 @@ The app uses a HTML canvas to draw up a balance mat with draggable tiles. The ti
 
 I wanted the app to be a starting point for students in their learning, with the knowledge that they would need to formalise their understanding with pen and paper later. With this in mind, the app writes each line of working (as the students will eventually have to do themselves) dynamically using calls to the MathJax javascript library.
 
-![This is an image](https://elasticmaths.epizy.com/assets/eq8.JPG)
+Try it out here: https://elasticmaths.epizy.com/eq8/
+
+![This is an image](eq8.JPG)
