@@ -1,0 +1,156 @@
+<html lang="en"><head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="author" content="Phil Aldridge" />
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+<!--<link rel="stylesheet" href="./styles/main.css" />-->
+
+<meta name="description" content="Interactive equation mat for class use." />
+<link rel="icon" type="image/png" href="./favicon.png" sizes="64x64" />
+<link rel="apple-touch-icon" href="./favicon.png" sizes="64x64" />
+<title>Eq8 - Get the x on its own</title>
+<script type="text/javascript" id="MathJax-script"  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="toast-container position-fixed top-0 start-0 p-4">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+        <img src="./favicon.png" style="height:2rem" alt="" />
+        <strong class="me-auto">Hint:</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="hintText">
+        Hello, world! This is a toast message.
+        </div>
+    </div>
+    </div>
+
+    <div class="alert alert-danger d-flex align-items-center position-fixed bottom-0 start-0 m-3" role="alert" id="alertDiv">
+            &#10069; An example danger alert with an icon
+    </div>
+
+	<div class="card position-absolute top-0 start-50 translate-middle-x text-bg-light border border-info d-inline mt-3 w-75" style="z-index:1081" id="welcomeMenu">
+		<div class="card-body">
+			<h5 class="card-header text-bg-info">Welcome to EQ8!</h5>
+            <div id="welcomeText">
+                <p class="card-text">In this app, you will practice the basic rules of manipulating an equation.</p>
+                <p class="card-text">The aim is to use the tools to get a single x term on its own on either the left or right side of the equation.</p>
+                <p class="card-text">You can either type your own equations to solve in the text field at the top or go through the levels provided and learn the tools one by one.</p>
+            </div>
+            <div class="row">
+                <div class="col p-1 text-center"><button class="btn btn-info" value="Make my own equation" onClick="closePopup(welcomeMenu)">Make my own equation</button></div>
+                 <div class="col p-1 text-center"><button class="btn btn-info col p-1" value="Go to level select" onClick="closePopup(welcomeMenu); createLevelSelect()">Go to level select</button></div>
+            </div>
+		</div>
+	</div>
+	<div class="card position-absolute top-0 start-50 translate-middle-x text-bg-light border border-success d-none w-75 mt-4" style="z-index:1070" id="levelSelectMenu"></div>
+
+    <div class="d-none" style="z-index:1070" id="completeMenu">
+        <div class="card-body">
+            <button type="button" class="btn-close" aria-label="Close" onClick="closePopup(completeMenu)"></button>
+			<h5 class="card-header text-bg-info mb-3">Level Completed!</h5>
+            <div class="card-text fw-bold">Congratulations. You got the x on its own!</div>
+            <div id="progressDiv">
+            	<div class="card-text">Progress:</div>
+            	<div class="progress">
+  					<div class="progress-bar progress-bar-striped bg-info progress-bar-animated" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" id="progressBar">25%</div>
+				</div>
+            </div>
+            <div class="row">
+                <div class="col p-1 text-center"><button class="btn btn-info" value="Next Level" onClick="closePopup(completeMenu);nextLevel()">Next Level</button></div>
+                 <div class="col p-1 text-center"><button class="btn btn-info col p-1" value="Go to level select" onClick="closePopup(completeMenu); createLevelSelect()">Go to level select</button></div>
+            </div>
+        </div>
+    </div>
+
+	<div class="card position-absolute top-0 start-50 translate-middle-x text-bg-light border border-info d-none w-75" style="z-index:1080" id="helpMenu">
+		<div class="card-body">
+			<button type="button" class="btn-close" aria-label="Close" onClick="closePopup(helpMenu)"></button>
+			<h5 class="card-header text-bg-info">List of Possible Moves </h5>
+			<ol class="list-group list-group-numbered">
+				<li class="list-group-item">Drag any purple "multiplier" tiles on to their connected tiles to multiply the term.</li>
+				<li class="list-group-item">Click on any terms where the coefficient is 0 to make them disappear.</li>
+				<li class="list-group-item">Drag a term on to another "like" term to add them together.</li>
+				<li class="list-group-item">Add, subtract, multiply or divide the equation using the buttons on the green menu.</li>
+				<li class="list-group-item">Double click on a term with brackets to expand the brackets.</li>
+				<li class="list-group-item">Create a new level by typing it in the text-box at the top of the page.</li>
+				<li class="list-group-item">If all else fails, restart the level with the yellow 'restart' button.</li>
+			</ol>
+			<p class="card-text fst-italic">Remember that the aim of each level is to get 1x on its own either on the left or right side of the equation.</p>
+            <div class="text-end">
+                <button class="btn btn-info" value="What do I do next?" onClick="toastHint()">What do I do next?</button>
+            </div>
+		</div>
+	</div>
+	<div class="card position-absolute top-0 start-50 translate-middle-x text-bg-light border border-success d-none w-75 pt-4" style="z-index:1070" id="levelSelectMenu"></div>
+<div class="topMenu">
+
+<h1 class="text-center">Get the x on its own</h1>
+
+<div class="row p-1 text-center">
+	<div class="col-2 text-center">
+		<input class="btn btn-info" type="button" value="?" onClick="openPopup(helpMenu)" />
+	</div>
+	<div class="col-4 text-center">
+		<div class="input-group input-group-lg mb-3 center">
+			<input type="text" class="form-control text-center input-lg" placeholder="" id="newEquation" onKeyDown="enterPressed()" />
+			<button class="btn btn-primary" type="button" id="button-addon1" onClick="enterPressed(true)">New Equation</button>
+		</div>
+	</div>
+	<div class="col-2 text-center">
+		<input class="btn btn-info" type="button" value="Levels" onClick="createLevelSelect()" />
+	</div>
+	<div class="col-2 text-center">
+		<input class="btn btn-warning reload" type="button" value="&#8635;" onClick="restartLevel()"/>
+	</div>
+</div>
+<!--<input type="text" id="newEquation" onkeydown="enterPressed()"/>
+<input type="button" title"Type equation and click here" value="New Equation" onClick="newEquation()"/>-->
+</div>
+<section id="controls" class="controls border">
+<div class="middleMenu">
+
+<div class="row bg-success bg-opacity-25 border border-success" id="operationsMenu">
+	<div class="col p-1 text-center"><input class="btn btn-success btn-lg" type="button" title="Add" value="+" onClick="showAddMenu(0)" id="addbtn"/></div>
+	<div class="col p-1 text-center"><input class="btn btn-danger btn-lg" type="button" title="Minus" value="-" onClick="showAddMenu(1)" id="minusbtn"/></div>
+	<div class="col p-1 text-center"><input class="btn btn-warning btn-lg" type="button" title="Times" value="x" onClick="showTimesMenu(0)" id="timesbtn"/></div>
+	<div class="col p-1 text-center"><input class="btn btn-secondary btn-lg" type="button" title="Divide" value="÷" onClick="showTimesMenu(1)" id="divbtn"/></div>
+</div>
+
+<div class="row bg-danger bg-opacity-25 border border-danger d-none" id="addMenu" >
+	<input type="button" title="back" value= "&#9754;" onClick="backToMultiplierNotice()"/>
+	<input type="button" title="a" value="1" onClick="add(A)" />
+	<input type="button" title="b" value="2" onClick="add(B)" />
+	<input type="button" title="c" value="3" onClick="add(C)" />
+	<input type="button" title="d" value="4" onClick="add(D)" />
+
+</div>
+
+<div class="d-none" id="multiplierNotice" >
+	<p>Drag any purple "multiplier" tiles on to their connected tile to simplify your equation</p>
+</div>
+</div>
+
+</section>
+<section id="game">
+<div class="row">
+	<div id="content" class="col-md-9" style="background: rgb(255, 255, 255);">
+	<canvas id="gameCanvas" width="1920" height="747" style="cursor: auto;">
+	Your browser does not support HTML5 canvas.
+	</canvas>
+	</div>
+	<div class="col-md-3 text-center border border-primary" id="workings">
+		<h3>Workings</h3>
+	</div>
+</div>
+</section>
+
+<footer id="footer">
+
+</footer> 
+<script type="text/javascript" id="main"  src="./main.js" >
+</script>
+
+</body></html>
